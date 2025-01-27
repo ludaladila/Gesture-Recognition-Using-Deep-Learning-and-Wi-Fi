@@ -38,29 +38,6 @@ def hampel_filter(input_array, window_size, n_sigmas=3):
     return new_array
 
 
-def hampel(csi, k, nsigma):
-    index = 0
-    csi = csi.copy()
-    for x in csi:
-        y = 0
-        if index <= k:
-            #Special case, first few samples.
-            y = k
-        elif index+k > len(csi):
-            #Special case, last few samples
-            y = -k
-
-        index += y
-        stdev = np.std(csi[index-k:index+k])
-        median = np.median(csi[index-k:index+k])
-        index -= y
-
-        if abs(x-median) > nsigma * stdev:
-            csi[index] = median
-        index += 1
-    return csi
-
-
 def validate_csi_packet(csi, x, index):
     for i in range(len(x) - 9):
         if np.all(np.abs(csi[i:i + 10]) < 50):
